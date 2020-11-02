@@ -1,0 +1,49 @@
+micronaut:
+  application:
+    name: bv
+#tag::security[]
+---
+micronaut:
+  security:
+    authentication: bearer
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'
+#end::security[]
+---
+jpa:
+  default:
+    packages-to-scan:
+#      - 'example.micronaut'
+      - 'example.micronaut.domain'
+#    entity-scan:
+#      packages:
+#        - 'example.micronaut'
+#        - 'example.micronaut.domain'
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+        show_sql: true
+---
+datasources:
+  default:
+    url: ${JDBC_URL:`jdbc:h2:mem:default;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE`}
+    username: ${JDBC_USER:sa}
+    password: ${JDBC_PASSWORD:""}
+    driverClassName: ${JDBC_DRIVER:org.h2.Driver}
+---
+kafka:
+  bootstrap:
+    servers: ${KAFKA_HOST:localhost}:${KAFKA_PORT:9092}
+---
+s3:
+  endpoint: ${S3_ENDPOINT:`http://localhost:8001`}
+  region: ${REGION:`eu-central-1`}
+---
+micronaut:
+  server:
+    port: ${PORT:8080}
